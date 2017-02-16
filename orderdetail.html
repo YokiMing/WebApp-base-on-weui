@@ -1,0 +1,179 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<title>ORDER DETAIL</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-touch-fullscreen" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+<link rel="stylesheet" type="text/css" href="css/weui.css"/>
+    <link rel="stylesheet" href="dist/lib/weui.css"/>
+    <link rel="stylesheet" href="dist/css/jquery-weui.css"/>
+<style type="text/css">
+.in-b{
+    display: inline-block;
+}
+.order-no,.order-time{
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-wrap: normal;
+    word-wrap: break-word;
+    word-break: break-all;
+    line-height: 32px;
+}
+.order-no{
+    margin-left: 0px;
+    font-size: 15px;
+    margin-top: 10px;
+    color: #000;
+}
+.colorurl{
+    color: red;
+}
+.order-time{
+    margin-right: 2%;
+    font-size: 11px;
+    color: #CECECE;
+    margin-top: 10px;
+}
+.weui_search_inner .weui_search_input{
+    height: 28px;
+    line-height: 28px;
+}
+.weui_search_inner .weui_icon_clear,.weui_search_inner .weui_icon_search{
+    top: 3px !important;
+}
+.search-result{
+    padding: 18px 15px !important;
+}
+#search_input{
+    font-size: 11px;
+}
+.order-contain{
+    margin-top: 0 !important;
+}
+.title{
+    position: relative;
+    padding-top: 0px;
+    box-sizing: border-box;
+    background-color: #EFEFF4;
+    z-index: 2;
+}
+.key-name{
+    width: 70px;
+}
+    .statusname{
+        width:200px;
+    }
+    .coaimg{
+        width:100%;
+    }
+</style>
+</head>
+<body>
+<script src="dist/lib/jquery-2.1.4.js"></script>
+<script src="dist/js/jquery-weui.js"></script>
+<div class="title">
+    <div class="order-no in-b" style="margin-top:0;">Order No:<span id="num"></span></div>
+    <div class="order-time in-b" style="margin-top:0;">Order Time:<span id="time"></span></div>
+</div>
+<div class="weui_panel order-contain" id="orderdetail_container">
+    <!-- 模板数据渲染容器 -->
+</div>
+</body>
+<script src="http://cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+<script src="js/mustache.js"></script>
+<script type="text/javascript" src="dist/js/swiper.js" charset="utf-8"></script>
+<script type="text/html" id="template">
+<div class="weui_panel_bd">
+    <div class="weui_media_box weui_media_text">
+        <div class="order-no"><div class="key-name in-b">Item:</div><span>{{product_name}}</span></div>
+        <div class="order-no"><div class="key-name in-b">Type:</div><span>{{type}}</span></div>
+        <a href="plantdetail.html?factoryid={{factory_id}}" style="display:block;" class="order-no colorurl" onclick="client.toDetail()"><div class="key-name in-b">Plant:</div><span>{{factory_name}}</span></a>
+        <a href="status.html?orderProductId={{id}}" style="display: block;" class="order-no in-b colorurl" onclick="client.toDetail()"><div class="key-name in-b">Status:</div><span class="statusname">{{status_name}}</span></a>
+        {{#coa}}
+        <!--<p style="display:block;" class="order-no"><div class="key-name in-b">COA</div><span class="order-time">{{status_time}}</span></p>-->
+        <!--<a href="coa.html" style="display:block;" class="order-no colorurl" onclick="client.toDetail()"><div class="key-name in-b">COA</div><span class="order-time">{{status_time}}</span></a>-->
+        <p class="key-name in-b">COA:</p><img class="coaimg" src="http://47.88.102.136:8888/saclesUploadFiles/uploadImgs/{{coa}}" />
+        {{/coa}}
+    </div>
+</div>
+</script>
+<script type="text/javascript">
+
+    //重写alert，不显示网址
+    window.alert = function(name){
+        var iframe = document.createElement("IFRAME");
+        iframe.style.display="none";
+        iframe.setAttribute("src", 'data:text/plain,');
+        document.documentElement.appendChild(iframe);
+        window.frames[0].window.alert(name);
+        iframe.parentNode.removeChild(iframe);
+    };
+
+$(function(){
+var template = $('#template').html();
+Mustache.parse(template); 
+$("#num").append(getQueryString("num"));
+$("#time").append(getQueryString("time"));
+    $.ajax({
+        type: 'GET',
+        url: 'http://sc.nephelex.com:8080/sales_api/api/get_order_product_list',
+        data:{
+            orderId:getQueryString("orderId")
+            //orderId:1 //test
+        },
+        dataType: 'json',
+        success: function(json){
+            var len = json.data.length;
+            for (var i=0 ; i<len ;i++){
+                // 格式化所有日期
+                if (json.data[i].status_time)
+                json.data[i].status_time = DateFormatter(json.data[i].status_time);
+                if (json.data[i].update_time)
+                json.data[i].update_time = DateFormatter(json.data[i].update_time);
+                if (json.data[i].create_time)
+                json.data[i].create_time = DateFormatter(json.data[i].create_time);
+                // 格式化产品类型
+                if (json.data[i].type == 0 || json.data[i].type == 1 || json.data[i].type == 2){
+                    json.data[i].type = TypeFormatter(json.data[i].type);
+                }
+
+                var rendered = Mustache.render(template, json.data[i]);
+                $('#orderdetail_container').append(rendered);
+            }
+        },
+        error: function(xhr, type){
+            alert('Data load error');
+            // 即使加载出错，也得重置
+            // me.resetload();
+        }
+    });
+})
+function getQueryString(name) { 
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i"); 
+    var r = window.location.search.substr(1).match(reg); 
+    if (r != null) return unescape(r[2]); return null; 
+} 
+function DateFormatter(val){
+    var date = new Date(val.substr(0, 10) + "T" + val.substr(11, 8));
+    var year=date.getFullYear(); //获取当前年份
+    var mon=date.getMonth()+1; //获取当前月份
+    var day=date.getDate(); //获取当前日
+    return year+"-"+mon+"-"+day;
+}
+function TypeFormatter(val){
+    if(val == 0){
+        return "Pigments";
+    }else if(val == 1){
+        return "Dyestuffs";
+    }else if(val == 2){
+        return "Additives";
+    }
+}
+</script>
+</html>
+
+

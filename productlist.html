@@ -1,0 +1,365 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<title>PRODUCT LIST</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<!--<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-touch-fullscreen" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />-->
+<meta name="format-detection" content="telephone=no" />
+<link rel="stylesheet" type="text/css" href="css/weui.css"/>
+<style type="text/css">
+html, body {
+    -webkit-text-size-adjust: none;
+    background-color: #f6f6f6;
+}
+table{
+    width: 90%;
+    margin:20px auto;
+    border-collapse:collapse;
+    border-spacing:0;
+    border-left:1px solid #efefef;
+    border-top:1px solid #efefef;
+}
+table th{
+    font-weight: bold;
+    background:#eee;
+    text-align: left;
+}
+table td{
+    color: red;
+}
+th,td{
+    font-size: 11px;
+    padding-left: 8px;
+    line-height: 28px;
+    border-right:1px solid #efefef;
+    border-bottom:1px solid #efefef;
+}
+.article{
+    margin-left: 5%;
+    margin-right: 5%;
+    font-size: 11px;
+    margin-top: 30px;
+    margin-bottom: 30px;
+}
+.article span{
+    color: red;
+}
+.text-cen{
+    text-align: center;
+    padding-left: 0;
+    color: red !important;
+}
+.table2 tr td{
+    padding-left: 0;
+    line-height: 28px;
+    color: black;
+}
+.transform td ,.transformtd{
+    font-size: 7px;
+    line-height: 14px !important;
+    text-align: center;
+}
+.transform td span,.transformtd span{
+    -webkit-transform:scale(0.7);
+    display: inline-block;
+}
+.table2 { border-spacing: 0;border-collapse: collapse; }
+.table2 * { padding:0px; margin: 0 -4px;;font-size:8px;}
+h2{
+    font-weight: 400;
+    font-size: 18px;
+    line-height: 32px;
+    margin-bottom: 10px;
+    margin-top:40px;
+}
+.key{
+    line-height: 32px;
+    margin-top: 8px;
+}
+.key p{
+    display: inline-block;
+    vertical-align: top;
+}
+.key span{
+    margin-left: 5px;
+    margin-right: 5px;
+    white-space: pre-wrap;
+    word-wrap: break-word;
+}
+.key #list_7{
+    width: 62%;
+    display: inline-block;
+}
+</style>
+</head>
+<body>
+
+</body>
+<script src="http://cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+<script src="js/mustache.js"></script>
+<script type="text/html" id="template">
+<div class="article">
+    <div>trade name:<span id="map_1"></span></div>
+    <div>Product reference from abroad:<span id="map_2"></span></div>
+</div>
+<table cellspacing="0" cellpadding="0">
+    <tr>
+        <th>Chemical class</th>
+        <th>C.I.NO.</th>
+        <th>CAS NO.</th>
+    </tr>
+    <tr>
+        <td id="table_1"></td>
+        <td id="table_2"></td>
+        <td id="table_3"></td>
+    </tr>
+</table>
+<div class="article">
+    <div>Applycation profile</div>
+</div> 
+<table cellspacing="0" cellpadding="0">
+    <tr>
+        <th>PS</th>
+        <th>SAN</th>
+        <th>PC</th>
+        <th>CA</th>
+        <th>CAB</th>
+        <th>PVC-R</th>
+        <th>ABS</th>
+        <th>PA</th>
+        <th>PMMA</th>
+    </tr>
+    <tr>
+        <td class="text-cen" id="table_4"></td>
+        <td class="text-cen" id="table_5"></td>
+        <td class="text-cen" id="table_6"></td>
+        <td class="text-cen" id="table_7"></td>
+        <td class="text-cen" id="table_8"></td>
+        <td class="text-cen" id="table_9"></td>
+        <td class="text-cen" id="table_10"></td>
+        <td class="text-cen" id="table_11"></td>
+        <td class="text-cen" id="table_12"></td>
+    </tr>
+</table>  
+<div class="article">
+    <div>★=recommended;◯=limited suitablity;△=not recommended main application;</div>
+    <div><span id="map_3"></span></div>
+</div> 
+<div class="article">
+    <div>Chemical and physical properties</div>
+</div> 
+<table cellspacing="0" cellpadding="0">
+    <tr>
+        <th>Density[g/cm³]</th>
+        <th>Melting Point[℃]</th>
+        <th>Bulk density</th>
+    </tr>
+    <tr>
+        <td id="table_13"></td>
+        <td id="table_14"></td>
+        <td id="table_15"></td>
+    </tr>
+</table>  
+<div class="article">
+    <div>Lignt fastness and heat resistance;</div>
+    <div>In GP-PS,transparent:<span id="map_4"></span>;opaque:<span id="map_5"></span>(0.05% dyestuff+1.0% TiO2)</div>
+    <div>Generally,the values stated can also be applied to SAN,PMMA,PC and rigid PVC.For modified polystyrene,especially ABS,the fastness properties are lower.</div>
+</div> 
+<table cellspacing="0" cellpadding="0" style="margin-bottom:0;">
+    <tr>
+        <th>Solubility in g/l at room temperature(23℃/72℉)</th>
+    </tr>
+</table> 
+<table style="margin-top:0;margin-bottom:0;" class="table2">
+    <tr class="transform">
+        <td><span>Water</span></td>
+        <td><span>Acetone</span></td>
+        <td><span>Benzyl<br>alcohol</span></td>
+        <td><span>Butyl<br>acetate</span></td>
+        <td><span>Ethanol</span></td>
+        <td><span>Methylene<br>chloride</span></td>
+        <td><span>Styrene<br>(monomer)</span></td>
+        <td><span>Xylene</span></td>
+    </tr>
+    <tr>
+        <td class="transformtd"><span>insoluble</span></td>
+        <td class="text-cen" id="table_16"></td>
+        <td class="text-cen" id="table_17"></td>
+        <td class="text-cen" id="table_18"></td>
+        <td class="text-cen" id="table_19"></td>
+        <td class="text-cen" id="table_20"></td>
+        <td class="text-cen" id="table_21"></td>
+        <td class="text-cen" id="table_22"></td>
+    </tr>
+</table>
+<div class="article">
+    <div>Heat stability:</div>
+</div>  
+<table cellspacing="0" cellpadding="0">
+    <tr>  
+        <th></th>  
+        <th>PS</th>
+        <th>SB*</th>
+        <th>ABS</th>
+        <th>SAN</th>
+        <th>PMMA</th>
+        <th>PC</th>
+        <th>PA6</th>
+        <th>PET</th>
+        <th>PPO</th>
+    </tr>
+    <tr>
+        <td style="color:black;">1.℃</td>
+        <td class="text-cen" id="table_23"></td>
+        <td class="text-cen" id="table_24"></td>
+        <td class="text-cen" id="table_25"></td>
+        <td class="text-cen" id="table_26"></td>
+        <td class="text-cen" id="table_27"></td>
+        <td class="text-cen" id="table_28"></td>
+        <td class="text-cen" id="table_29"></td>
+        <td class="text-cen" id="table_30"></td>
+        <td class="text-cen" id="table_31"></td>
+    </tr>
+    <tr>
+        <td style="color:black;">2.℃</td>
+        <td class="text-cen" id="table_32"></td>
+        <td class="text-cen" id="table_33"></td>
+        <td class="text-cen" id="table_34"></td>
+        <td class="text-cen" id="table_35"></td>
+        <td class="text-cen" id="table_36"></td>
+        <td class="text-cen" id="table_37"></td>
+        <td class="text-cen" id="table_38"></td>
+        <td class="text-cen" id="table_39"></td>
+        <td class="text-cen" id="table_40"></td>
+    </tr>
+</table>  
+<div class="article" style="margin-bottom:20px;">
+    <div>1.=0.05%dyestuff</div>
+    <div>2.=0.05%dyestuff+1.0% TiO2</div>
+    <div>*Values not for styrene-butadiene block copolymer</div>
+</div> 
+</script>
+<script type="text/html" id="template_2">
+<div class="article">
+    <h2>1. PRODUCT:</h2>
+    <div class="key">Name:<span id="list_1"></span></div>
+    <div class="key">Chemical Class:<span id="list_2"></span></div>
+    <div class="key">Colour Index Name:<span id="list_3"></span></div>
+    <div class="key">Colour Index No.:<span id="list_4"></span></div>
+    <div class="key">CAS No.:<span id="list_5"></span></div>
+    <div class="key">EINECS No.:<span id="list_6"></span></div>
+    <div class="key"><p>Substance Name:</p><span id="list_7"></span></div>
+    <div class="key">Molecular Formula:<span id="list_8"></span></div>
+    <h2>2. PHYSICAL PROPERTIES:</h2>
+    <div class="key">Density:<span id="list_9"></span></div>
+    <div class="key">Specific Surface:<span id="list_10"></span></div>
+    <div class="key">Moisture Content:<span id="list_11"></span></div>
+    <div class="key">Water Soluble Content:<span id="list_12"></span></div>
+    <div class="key">PH:<span id="list_13"></span></div>
+    <div class="key">Oil Absorption:<span id="list_14"></span></div>
+    <div class="key">Heat stability:<span id="list_15"></span></div>
+    <div class="key">Tint Tone (1:10):<span id="list_16"></span></div>
+    <div class="key">Acid Resistance:<span id="list_17"></span></div>
+    <div class="key">Alkali Resistance:<span id="list_18"></span></div>
+    <h2>3. LIGHT FASTNESS:</h2>
+    <div class="key">Full Tone (1:1):<span id="list_19"></span></div>
+    <div class="key">Tint Tone (1:10):<span id="list_20"></span></div>
+    <h2>4. WEATHER FASTNESS:</h2>
+    <div class="key">6 Months:<span id="list_21"></span></div>
+    <div class="key">12 Months:<span id="list_22"></span></div>
+    <h2>5. FASTNESS PROPERTIES:</h2>
+    <div class="key">Migration:<span id="list_23"></span></div>
+    <div class="key">Ethanol:<span id="list_24"></span></div>
+    <div class="key">Ethyl Acetate:<span id="list_25"></span></div>
+    <div class="key">MEK:<span id="list_26"></span></div>
+    <div class="key">Butanol:<span id="list_27"></span></div>
+    <div class="key">Butyl Acetate:<span id="list_28"></span></div>
+    <div class="key">DOP:<span id="list_29"></span></div>
+    <div class="key">Toluene:<span id="list_30"></span></div>
+    <div class="key">White Spirit:<span id="list_31"></span></div>
+    <div class="key">DBP:<span id="list_32"></span></div>
+    <div class="key">Paraffin Wax:<span id="list_33"></span></div>
+    <div class="key">Butter:<span id="list_34"></span></div>
+    <div class="key">Soap:<span id="list_35"></span></div>
+    <div class="key">Water:<span id="list_36"></span></div>
+    <div class="key">Linseed Oil:<span id="list_37"></span></div>
+    <div class="key">Cellosolve:<span id="list_38"></span></div>
+    <h2>6. TECHNICAL COMMENTS:</h2>
+    <div class="key"><span style="margin-left:0;" id="list_39"></span></div>
+    <h2>7. APPLICATIONS:</h2>
+    <div class="key"><span style="margin-left:0;" id="list_40"></span></div>
+</div>
+</script>
+<script type="text/javascript">
+
+    //重写alert，不显示网址
+    window.alert = function(name){
+        var iframe = document.createElement("IFRAME");
+        iframe.style.display="none";
+        iframe.setAttribute("src", 'data:text/plain,');
+        document.documentElement.appendChild(iframe);
+        window.frames[0].window.alert(name);
+        iframe.parentNode.removeChild(iframe);
+    }
+
+$(function(){
+    var template = $('#template').html();
+    Mustache.parse(template); 
+    var template_2 = $('#template_2').html();
+    Mustache.parse(template_2); 
+    $.ajax({
+        type: 'GET',
+        url: 'http://sc.nephelex.com:8080/sales_api/api/get_product_detail',
+        data:{
+            productId:getQueryString("id")
+        },
+        dataType: 'json',
+        success: function(json){
+            if(getQueryString("type") == 1){
+                var rendered = Mustache.render(template);
+                $('body').append(rendered);
+                var len_table = json.data_table.length;
+                var len_map = json.data_map.length;
+                for (var i=1 ; i<=len_table ;i++){
+                    if(i>3 && i<13){
+                        if(json.data_table[i-1].tab_value == 0){
+                            json.data_table[i-1].tab_value = "★";
+                        }else if(json.data_table[i-1].tab_value == 1){
+                            json.data_table[i-1].tab_value = "◯";
+                        }else if(json.data_table[i-1].tab_value == 2){
+                            json.data_table[i-1].tab_value = "△";
+                        }
+                    }
+                    $("#table_"+i).html(json.data_table[i-1].tab_value);
+                }
+                for (var i=1 ; i<=len_map ;i++){
+                    $("#map_"+i).html(json.data_map[i-1].temp_value);
+                }
+            }else if(getQueryString("type") == 0){
+                var rendered = Mustache.render(template_2);
+                $('body').append(rendered);
+                var len_map = json.data_map.length;
+                for (var i=1 ; i<=len_map ;i++){
+                    $("#list_"+i).html(json.data_map[i-1].temp_value);
+                }
+            }
+        },
+        error: function(xhr, type){
+            alert('Data load error');
+            // 即使加载出错，也得重置
+            // me.resetload();
+        }
+    });
+})
+function getQueryString(name) { 
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i"); 
+    var r = window.location.search.substr(1).match(reg); 
+    if (r != null) return unescape(r[2]); return null; 
+} 
+</script>
+</html>
+
+

@@ -1,0 +1,224 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<title>LOGIN</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<!--<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-touch-fullscreen" content="yes" />-->
+<meta name="format-detection" content="telephone=no" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<link rel="stylesheet" type="text/css" href="css/weui.min.css"/>
+<style type="text/css">
+body{
+	background-color: white;
+}
+.logodiv{
+	text-align:center;
+	margin-top: 20px;
+	margin-bottom: 15px;
+}
+.logodiv img{
+	width: 24%;
+}
+.login-bar{
+    position: relative;
+    width:100%;
+    height:30%;
+}
+.login-bar ul li{
+    width:84%;
+    height:34px;
+    margin: 0 auto;
+    border-bottom:1px solid #cacaca;
+    list-style: none;
+}
+.login-bar .text, .login-bar .psd{
+    position: absolute;
+    margin-left:5%;
+    height:25px;
+    border:none;
+    background:none;
+}
+.login-bar img{
+	margin-top: 2px;
+}
+input:focus {
+    outline:none;
+}
+.checkboxli{
+	border-bottom:none !important;
+	margin-top: 30px !important;
+}
+.fx {
+	float: left;
+	line-height: 24px;
+    height: 24px;
+    width: 16px;
+    margin-right: 10px;
+    border:1px solid #ccc;
+}
+.checkboxli p{
+	line-height: 24px;
+	color: #838383;
+    font-size: 14px;
+}
+select{
+    -webkit-appearance: none;
+    border: 0;
+    outline: 0;
+    background-color: transparent;
+    width: 60%;
+    display: inline-block;
+    font-size: inherit;
+    position: relative;
+    z-index: 1;
+    padding-left: 15px;
+    top: -3px;
+}
+</style>
+</head>
+<body>
+	<div class="logodiv">
+		<img src="image/logo.png">
+	</div>
+	<div class="login-bar">
+        <ul>
+            <li>
+                <img src="image/Account.png" width="20px">
+                <input type="text" class="text" id="username" placeholder="Account" />
+            </li>
+            <li style="margin-top:30px;">
+                <img src="image/Password.png" width="20px">
+                <input type="password" id="password" class="psd" placeholder="Password" />
+            </li>
+            <li style="margin-top:30px;">
+            	<img src="image/Account.png" width="20px">
+            	<select id="select">
+                    <option value="0">client</option>
+                    <option value="1">salesman</option>
+                </select>
+            </li>
+            <li class="checkboxli">
+            	<div style="width:52%; display:inline-block; margin-left:3%;">
+            		<input class="fx" type="checkbox" id="autologin" />
+                    <p>Auto login</p>
+            	</div>
+            	<div style="width:40%; display:inline-block;">
+            		<input class="fx" type="checkbox" id="remember" />
+                    <p>Remember</p>
+            	</div>
+            </li>
+        </ul>
+        <a href="javascript:;" id="login" class="weui_btn weui_btn_warn" style="width:84%;margin-top:30px;">LOGIN</a>
+    </div>
+</body>
+<script src="http://cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript">
+$(function(){
+
+  //重写alert，不显示网址
+    window.alert = function(name){
+        var iframe = document.createElement("IFRAME");
+        iframe.style.display="none";
+        iframe.setAttribute("src", 'data:text/plain,');
+        document.documentElement.appendChild(iframe);
+        window.frames[0].window.alert(name);
+        iframe.parentNode.removeChild(iframe);
+    };
+
+	var username = localStorage.getItem("username");
+	var password = localStorage.getItem("password");
+    var remember = localStorage.getItem("isRemember");
+    var autologin = localStorage.getItem("autologin");
+	$("#username").val(username);
+	$("#password").val(password);
+    $("#remember").prop("checked", remember);
+    $("#autologin").prop("checked", autologin);
+
+    if (document.getElementById("autologin").checked === true) {
+        document.getElementById("remember").checked = true;
+        $.ajax({
+            type: 'GET',
+            url: 'http://sc.nephelex.com:8080/sales_api/api/login',
+            data: {
+                username:$("#username").val(),
+                password:$("#password").val(),
+                type:$("#select").val()
+            },
+            success: function(json){
+                console.log(json);
+                if(json.msg != "登录成功"){
+                    alert('Password is error');
+                }
+                localStorage.setItem("id", json.data.id);
+                localStorage.setItem("type", $("#select").val());
+                var remember = document.getElementById("remember").checked;
+                var autologin = document.getElementById("autologin").checked;
+                if($("#remember").is(':checked')){
+                    localStorage.setItem("username", $("#username").val());
+                    localStorage.setItem("password", $("#password").val());
+                    localStorage.setItem("isRemember", remember);
+                    localStorage.setItem("autologin", autologin);
+                }else{
+                    localStorage.setItem("username", $("#username").val());
+                    localStorage.setItem("password", $("#password").val());
+                    localStorage.setItem("isRemember", remember);
+                    localStorage.setItem("autologin", autologin);
+                }
+                window.location = client.toTabbar();
+            },
+            error: function(xhr, type){
+                alert('Data load error');
+            }
+        });
+    }
+
+    $("#login").click(function(){
+        $.ajax({
+            type: 'GET',
+            url: 'http://sc.nephelex.com:8080/sales_api/api/login',
+            data: {
+                username:$("#username").val(),
+                password:$("#password").val(),
+                type:$("#select").val()
+            },
+            success: function(json){
+                if(json.msg != "登录成功"){
+                    alert('Password is error');
+                }
+                localStorage.setItem("id", json.data.id);
+                localStorage.setItem("type", $("#select").val());
+                var remember = document.getElementById("remember").checked;
+                var autologin = document.getElementById("autologin").checked;
+                if($("#remember").is(':checked')){
+                    localStorage.setItem("username", $("#username").val());
+                    localStorage.setItem("password", $("#password").val());
+                    localStorage.setItem("isRemember", remember);
+                }else{
+                    if ($("#autologin").is(':checked')){
+                        localStorage.setItem("username", $("#username").val());
+                        localStorage.setItem("password", $("#password").val());
+                        localStorage.setItem("isRemember", remember);
+                    }else {
+                        localStorage.removeItem("username", $("#username").val());
+                        localStorage.removeItem("password", $("#password").val());
+                        localStorage.removeItem("isRemember", remember);
+                    }
+                }
+                if ($("#autologin").is(':checked')){
+                    localStorage.setItem("autologin", autologin);
+                }else{
+                    localStorage.removeItem("autologin", autologin);
+                }
+                window.location = client.toTabbar();
+            },
+            error: function(xhr, type){
+                alert('Data load error');
+            }
+        });
+    })
+})
+
+</script>
+</html>

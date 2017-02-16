@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<title>COA</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-touch-fullscreen" content="yes" />
+<meta name="format-detection" content="telephone=no" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<link rel="stylesheet" type="text/css" href="css/weui.css"/>
+<style type="text/css">
+
+</style>
+</head>
+<body>
+<article class="weui_article" id="plantdetail_container">
+    <section>
+        <p>
+            <img id="imageId" src="" alt="">
+        </p>
+    </section>
+</article>
+</body>
+<script src="http://cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript">
+$(function(){
+    $("#imageId").attr("src","http://sc.nephelex.com:8888/saclesUploadFiles/uploadImgs"+getQueryString("coa"));
+});
+
+function getQueryString(name) { 
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i"); 
+    var r = window.location.search.substr(1).match(reg); 
+    if (r != null) return unescape(r[2]); return null; 
+} 
+</script>
+</html>
+
+

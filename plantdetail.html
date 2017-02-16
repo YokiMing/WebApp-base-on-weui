@@ -1,0 +1,83 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<title>PLANT DETAIL</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<!--<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-touch-fullscreen" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />-->
+    <meta name="format-detection" content="telephone=no" />
+<link rel="stylesheet" type="text/css" href="css/weui.css"/>
+<style type="text/css">
+body {
+    background-color: rgb(244,244,244);
+}
+.title{
+    line-height: 32px;
+    font-weight: normal !important;
+    letter-spacing: 0.5px;
+}
+</style>
+</head>
+<body>
+<article class="weui_article" id="plantdetail_container">
+    <!-- 模板数据渲染容器 -->
+</article>
+</body>
+<script src="http://cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+<script src="js/mustache.js"></script>
+<script type="text/html" id="template">
+<section>
+    <h3 class="title">Name:{{name}}</h2>
+    <h3 class="title">Scale:{{size}} Staffs</h3>
+        <p>
+            <img src="http://sc.nephelex.com:8888/saclesUploadFiles/uploadImgs/{{img}}" alt="">
+        </p>
+    </section>
+    <section>
+        <h3>Introduction:</h3>
+        <p>{{{des}}}</p>
+    </section>
+</section>
+</script>
+<script type="text/javascript">
+
+    //重写alert，不显示网址
+    window.alert = function(name){
+        var iframe = document.createElement("IFRAME");
+        iframe.style.display="none";
+        iframe.setAttribute("src", 'data:text/plain,');
+        document.documentElement.appendChild(iframe);
+        window.frames[0].window.alert(name);
+        iframe.parentNode.removeChild(iframe);
+    }
+
+$(function(){
+var template = $('#template').html();
+Mustache.parse(template); 
+$.ajax({
+    type: 'GET',
+    url: 'http://sc.nephelex.com:8080/sales_api/api/get_factory_detail',
+    data:{
+        factoryId:getQueryString("factoryId") //test
+    },
+    dataType: 'json',
+    success: function(json){
+        var rendered = Mustache.render(template, json.data);
+        $('#plantdetail_container').append(rendered);
+    },
+    error: function(xhr, type){
+        alert('Data load error');
+    }
+})
+})
+function getQueryString(name) { 
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i"); 
+    var r = window.location.search.substr(1).match(reg); 
+    if (r != null) return unescape(r[2]); return null; 
+} 
+</script>
+</html>
+
+

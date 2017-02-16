@@ -1,0 +1,182 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<title>STATUS</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=2.0, user-scalable=yes" />
+<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-touch-fullscreen" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+    <meta name="format-detection" content="telephone=no" />
+<link rel="stylesheet" type="text/css" href="css/weui.min.css"/>
+<link rel="stylesheet" href="css/timeline.css" />
+<style type="text/css">
+body{
+    background: #F6F6F6;
+}
+.img-con{
+    width: 50% !important;
+    height: 50% !important;
+}
+.getimg{
+    width: 100% !important;
+    height: 100% !important;
+}
+.large-icon{
+    width: 52px !important;
+    height: 52px !important;
+    margin-left: -10px;
+    box-shadow: 0 0 0 0px white, inset 0 0px 0 rgba(0, 0, 0, 0.08), 0 0px 0 0px rgba(0, 0, 0, 0.05);
+}
+.large-icon img{
+    width: 28px !important;
+    height: 28px !important;
+    margin-left: -14px !important;
+    margin-top: -14px !important;
+}
+.large-title{
+    font-size: 18px !important;
+}
+.large-img{
+    width: 75% !important;
+}
+.cd-grey{
+    border:1px solid #ccc;
+}
+.font-12{
+    font-size: 12px;
+}
+.cd-timeline{
+    margin-bottom: 40px !important;
+}
+</style>
+</head>
+<body>
+<section id="cd-timeline" class="cd-container">
+    <div class="cd-timeline-block" id="con_1">
+        <div class="cd-timeline-img cd-grey">
+            <img src="http://sc.nephelex.com:8080/sales/svg/microscope_m.svg" alt="pic">
+        </div>
+        <div class="cd-timeline-content" id="content_1">
+            <h2>PSS TEST</h2>
+        </div>
+    </div>
+    <div class="cd-timeline-block" id="con_2">
+        <div class="cd-timeline-img cd-grey">
+            <img src="http://sc.nephelex.com:8080/sales/svg/gongsi1_m.svg" alt="pic">
+        </div>
+        <div class="cd-timeline-content" id="content_2">
+            <h2>LEAVE FACTORY</h2>
+        </div>
+    </div>
+    <div class="cd-timeline-block" id="con_3">
+        <div class="cd-timeline-img cd-grey">
+            <img src="http://sc.nephelex.com:8080/sales/svg/cangku1_m.svg" alt="pic">
+        </div>
+        <div class="cd-timeline-content" id="content_3">
+            <h2>WAREHOUSE ENTRY</h2>
+        </div>
+    </div>
+    <div class="cd-timeline-block" id="con_4">
+        <div class="cd-timeline-img cd-grey">
+            <img src="http://sc.nephelex.com:8080/sales/svg/car_m.svg" alt="pic">
+        </div>
+        <div class="cd-timeline-content" id="content_4">
+            <h2>CONTAINER ENTRY</h2>
+        </div>
+    </div>
+    <div class="cd-timeline-block" id="con_5">
+        <div class="cd-timeline-img cd-grey">
+            <img src="http://sc.nephelex.com:8080/sales/svg/CIO_m.svg" alt="pic">
+        </div>
+        <div class="cd-timeline-content" id="content_5">
+            <h2>CUSTOMS CLEARANCE</h2>
+        </div>
+    </div>
+    <div class="cd-timeline-block" id="con_6">
+        <div class="cd-timeline-img cd-grey">
+            <img src="http://sc.nephelex.com:8080/sales/svg/yzm_m.svg" alt="pic">
+        </div>
+        <div class="cd-timeline-content" id="content_6">
+            <h2>CUSTOMS INSPECTION</h2>
+        </div>
+    </div>
+    <div class="cd-timeline-block" id="con_7">
+        <div class="cd-timeline-img cd-grey">
+            <img src="http://sc.nephelex.com:8080/sales/svg/lc_m.svg" alt="pic">
+        </div>
+        <div class="cd-timeline-content" id="content_7">
+            <h2>LEAVE PORT</h2>
+        </div>
+    </div>
+</section>
+</body>
+<script src="http://cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+<script src="js/mustache.js"></script>
+<script type="text/html" id="template">
+<span class="cd-date">{{create_time}}</span>
+<br/>
+<div class="img-con">
+    <img class="getimg" src="http://sc.nephelex.com:8888/saclesUploadFiles/uploadImgs/{{img}}" />
+</div>
+</script>
+<script type="text/javascript">
+
+    //重写alert，不显示网址
+    window.alert = function(name){
+        var iframe = document.createElement("IFRAME");
+        iframe.style.display="none";
+        iframe.setAttribute("src", 'data:text/plain,');
+        document.documentElement.appendChild(iframe);
+        window.frames[0].window.alert(name);
+        iframe.parentNode.removeChild(iframe);
+    };
+
+$(function(){
+    var template = $('#template').html();
+    Mustache.parse(template);
+    $.ajax({
+        type: 'GET',
+        url: 'http://sc.nephelex.com:8080/sales_api/api/get_order_product_status',
+        data:{
+            orderProductId:getQueryString("orderProductId")
+        },
+        dataType: 'json',
+        success: function(json){
+            var firstStatusId = json.data[0]["status_id"];
+            var len = json.data.length;
+            var j = firstStatusId - 1;
+            var l = len + firstStatusId;
+            for (var ii=0; ii< l; ii++){
+                $("#con_" +ii).find(".cd-timeline-img").css("background","#32AA32");
+            }
+            for (var i=0 ; i < len ;i++ ){
+                j++;
+                
+                var rendered = Mustache.render(template, json.data[i]);
+                $("#content_"+j).append(rendered);
+                if(i == len - 1){
+                    $("#con_"+j).find(".cd-timeline-img").addClass("large-icon");
+                    $("#content_"+j).find("h2").addClass("large-title");
+                    $("#content_"+j).find(".img-con").addClass("large-img");
+
+                    for(var k=j+1 ; k<=7 ; k++){
+                        $("#content_" + k).find("h2").css("color","#7f8c97");
+                    }
+                }
+            }
+        },
+        error: function(xhr, type){
+            alert('Data load error');
+        }
+    });
+});
+function getQueryString(name) { 
+    var reg = new RegExp("(^|&)" + name + "=([^&]*)(&|$)", "i"); 
+    var r = window.location.search.substr(1).match(reg); 
+    if (r != null) return unescape(r[2]); return null; 
+} 
+</script>
+</html>
+
+

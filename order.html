@@ -1,0 +1,246 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<title>ORDER</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<!--<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-touch-fullscreen" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />-->
+<meta name="format-detection" content="telephone=no" />
+<link rel="stylesheet" type="text/css" href="css/weui.css"/>
+<link rel="stylesheet" href="dist/dropload.css">
+<style type="text/css">
+.in-b{
+    display: inline-block;
+}
+.order-no,.order-time{
+    text-overflow: ellipsis;
+    white-space: nowrap;
+    word-wrap: normal;
+    word-wrap: break-word;
+    word-break: break-all;
+    line-height: 32px;
+}
+.order-no{
+    font-size: 15px;
+}
+.order-time{
+    float: right;
+    margin-right: 2%;
+    font-size: 11px;
+    color: #CECECE;
+}
+.weui_search_inner .weui_search_input{
+    height: 28px;
+    line-height: 28px;
+}
+.weui_search_inner .weui_icon_clear,.weui_search_inner .weui_icon_search{
+    top: 3px !important;
+}
+.search-result{
+    padding: 18px 15px !important;
+}
+#search_input{
+    font-size: 11px;
+}
+.order-contain{
+    margin-top: 0 !important;
+}
+</style>
+</head>
+<body>
+<div class="weui_search_bar" id="search_bar">
+    <form class="weui_search_outer">
+        <div class="weui_search_inner">
+            <i class="weui_icon_search"></i>
+            <input type="search" class="weui_search_input" id="search_input" placeholder="Please enter the order number or name" required="" oninput="OnInput (event)">
+            <a href="javascript:" class="weui_icon_clear" id="search_clear"></a>
+        </div>
+        <label for="search_input" class="weui_search_text" id="search_text" style="display: none;">
+            <i class="weui_icon_search"></i>
+            <span>搜索</span>
+        </label>
+    </form>
+</div>
+<div class="element">
+<div class="weui_panel order-contain">
+        <div class="weui_panel_bd" id="order_container">
+            <!-- 模板数据渲染容器 -->
+        </div>
+    </div>
+</div>
+</body>
+<script src="http://cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+<script src="dist/dropload.min.js"></script>
+<script src="js/mustache.js"></script>
+<script type="text/html" id="template">
+<a class="weui_media_box weui_media_text" href="orderdetail.html?orderId={{id}}&num={{orderNo}}&time={{create_time}}" style="display:block;" onclick="client.toDetail()">
+    <div class="order-no in-b">Order No：<span>{{orderNo}}</span></div>
+    <span class="order-time">Order time：<span>{{create_time}}</span></span>
+    {{#es_shipment_time}}
+    <div class="order-no">ETD：<span>{{es_shipment_time}}</span></div>
+    {{/es_shipment_time}}
+    {{#shipment_time}}
+    <div class="order-no">Shipment date：<span>{{shipment_time}}</span></div>
+    {{/shipment_time}}
+</a>
+</script>
+<script type="text/javascript">
+
+    //重写alert，不显示网址
+    window.alert = function(name){
+        var iframe = document.createElement("IFRAME");
+        iframe.style.display="none";
+        iframe.setAttribute("src", 'data:text/plain,');
+        document.documentElement.appendChild(iframe);
+        window.frames[0].window.alert(name);
+        iframe.parentNode.removeChild(iframe);
+    }
+
+var template = $('#template').html();
+Mustache.parse(template); 
+var userId = localStorage.getItem("id");
+var pageNum = 0;
+$('.element').dropload({
+    scrollArea : window,
+    domUp : {
+            domClass   : 'dropload-up',
+            domRefresh : '<div class="dropload-refresh">↓down dropload</div>',
+            domUpdate  : '<div class="dropload-update">↑release upload</div>',
+            domLoad    : '<div class="dropload-load"><span class="loading"></span>loading...</div>'
+        },
+        domDown : {
+            domClass   : 'dropload-down',
+            domRefresh : '<div class="dropload-refresh">↑up dropload</div>',
+            domLoad    : '<div class="dropload-load"><span class="loading"></span>loading...</div>',
+            domNoData  : '<div class="dropload-noData">no more data</div>'
+        },
+    loadUpFn : function(me){
+        window.location.reload();
+    },
+    loadDownFn : function(me){
+        pageNum = pageNum + 1;
+        var type = localStorage.getItem("type");
+        if(type == 1){
+        $.ajax({
+            type: 'GET',
+            url: 'http://sc.nephelex.com:8080/sales_api/api/get_user_order_list?pageSize=10',
+            data:{
+                pageNo:pageNum, 
+                // userId:1  //这里暂时把userId写死（测试用）
+                userId:userId
+            },
+            dataType: 'json',
+            success: function(json){
+                if(json.data.length != 0){  //如果还有数据
+                    var len = json.data.length;
+                    for (var i=0 ; i<len ;i++){
+                        // 格式化所有日期
+               if (json.data[i].es_shipment_time){
+                        json.data[i].es_shipment_time = DateFormatter(json.data[i].es_shipment_time);
+               }
+               if (json.data[i].update_time){
+                        json.data[i].update_time = DateFormatter(json.data[i].update_time);
+               }
+               if (json.data[i].shipment_time){
+                        json.data[i].shipment_time = DateFormatter(json.data[i].shipment_time);
+               }
+               if (json.data[i].create_time){
+                        json.data[i].create_time = DateFormatter(json.data[i].create_time);
+               }
+                        var rendered = Mustache.render(template, json.data[i]);
+                        $('#order_container').append(rendered);
+                    }
+                }else{
+                    // console.log("没有数据了");
+                    // 锁定
+                    me.lock();
+                    // 无数据
+                    me.noData();
+                }
+                // 每次数据加载完，必须重置
+                me.resetload();
+            },
+            error: function(xhr, type){
+                alert('Data load error');
+                // 即使加载出错，也得重置
+                // me.resetload();
+            }
+        });
+        }
+        else if(type == 0){
+            $.ajax({
+            type: 'GET',
+            url: 'http://sc.nephelex.com:8080/sales_api/api/get_custom_order_list?pageSize=10',
+            data:{
+                pageNo:pageNum, 
+                // userId:1  //这里暂时把userId写死（测试用）
+                customId:userId
+            },
+            dataType: 'json',
+            success: function(json){
+                if(json.data.length != 0){  //如果还有数据
+                    var len = json.data.length;
+                    for (var i=0 ; i<len ;i++){
+                        // 格式化所有日期
+                   if (json.data[i].es_shipment_time){
+                        json.data[i].es_shipment_time = DateFormatter(json.data[i].es_shipment_time);
+                   }
+                   if (json.data[i].update_time){
+                        json.data[i].update_time = DateFormatter(json.data[i].update_time);
+                   }
+                   if (json.data[i].shipment_time){
+                        json.data[i].shipment_time = DateFormatter(json.data[i].shipment_time);
+                   }
+                   if (json.data[i].create_time){
+                        json.data[i].create_time = DateFormatter(json.data[i].create_time);
+                   }
+                        var rendered = Mustache.render(template, json.data[i]);
+                        $('#order_container').append(rendered);
+                    }
+                }else{
+                    // console.log("没有数据了");
+                    // 锁定
+                    me.lock();
+                    // 无数据
+                    me.noData();
+                }
+                // 每次数据加载完，必须重置
+                me.resetload();
+            },
+            error: function(xhr, type){
+                alert('Data load error');
+                // 即使加载出错，也得重置
+                // me.resetload();
+            }
+        });
+        }
+    }
+});
+
+$(function(){
+    $("#search_clear").click(function(){
+        $("#search_input").val("").focus();
+        $("#search_show").css("display","none");
+    })
+})
+
+function OnInput(e) {
+    $("#search_show").css("display","block");
+}
+
+function DateFormatter(val){
+    var date = new Date(val.substr(0, 10) + "T" + val.substr(11, 8));
+    var year=date.getFullYear(); //获取当前年份
+    var mon=date.getMonth()+1; //获取当前月份
+    var day=date.getDate(); //获取当前日
+    return year+"-"+mon+"-"+day;
+}
+</script>
+<script type="text/javascript">
+
+</script>
+</html>
+
+

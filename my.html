@@ -1,0 +1,200 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<title>MY</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<!--<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-touch-fullscreen" content="yes" />-->
+<meta name="format-detection" content="telephone=no" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />
+<link rel="stylesheet" type="text/css" href="css/weui.min.css"/>
+<style type="text/css">
+body{
+	background-color: rgb(244,244,244);
+}
+.logodiv{
+	text-align:center;
+	margin-top: 10px;
+	margin-bottom: 10px;
+}
+.logodiv img{
+	width: 24%;
+}
+.version{
+    font-size: 11px;
+    color: #999;
+}
+.cell{
+    padding: 18px 15px !important;
+}
+</style>
+</head>
+<body>
+	<div class="logodiv">
+		<img src="image/logo.png">
+	</div>
+    <div class="weui_panel">
+        <div class="weui_panel_bd">
+            <div class="weui_media_box weui_media_small_appmsg">
+                <div class="weui_cells weui_cells_access" id="cells">
+                    <a class="weui_cell cell" href="resetpassword.html" onclick="client.toDetail()">
+                        <div class="weui_cell_hd"></div>
+                        <div class="weui_cell_bd weui_cell_primary">
+                            <p>Repassword</p>
+                        </div>
+                        <span class="weui_cell_ft"></span>
+                    </a>
+                    <a class="weui_cell cell" id="clearcache" href="javascript:;">
+                        <div class="weui_cell_hd"></div>
+                        <div class="weui_cell_bd weui_cell_primary">
+                            <p>Cache clear</p>
+                        </div>
+                        <span class="weui_cell_ft"></span>
+                    </a>
+                    <a class="weui_cell cell" id="versionupdate" href="javascript:;">
+                        <div class="weui_cell_hd"></div>
+                        <div class="weui_cell_bd weui_cell_primary">
+                            <p>Version update</p>
+                        </div>
+                        <span class="version">Current version V1.1.0</span>
+                    </a>
+                    <a class="weui_cell cell" href="aboutus.html" onclick="client.toDetail()">
+                        <div class="weui_cell_hd"></div>
+                        <div class="weui_cell_bd weui_cell_primary">
+                            <p>About us</p>
+                        </div>
+                        <span class="weui_cell_ft"></span>
+                    </a>
+                </div>
+            </div>
+        </div>
+    </div>
+    <a href="javascript:;" class="weui_btn weui_btn_warn" style="width:84%;margin-top:10px;" onclick="client.toLogin()">SIGN OUT</a>
+    <!-- 弹窗 -->
+    <div class="weui_dialog_confirm" id="dialog1" style="display:none;">
+        <div class="weui_mask"></div>
+        <div class="weui_dialog">
+            <div class="weui_dialog_hd"><strong class="weui_dialog_title">Cache Cleaner</strong></div>
+            <div class="weui_dialog_bd" style="text-align:center;padding: 20px 0;">Clean Cache files?</div>
+            <div class="weui_dialog_ft">
+                <a href="javascript:;" class="weui_btn_dialog default">Cancel</a>
+                <a href="javascript:;" class="weui_btn_dialog primary">OK</a>
+            </div>
+        </div>
+    </div>
+    <div class="weui_dialog_confirm" id="dialog2" style="display:none;">
+        <div class="weui_mask"></div>
+        <div class="weui_dialog">
+            <div class="weui_dialog_hd"><strong class="weui_dialog_title">Version update</strong></div>
+            <div class="weui_dialog_bd" style="text-align:center;padding: 20px 0;">Update to version?</div>
+            <div class="weui_dialog_ft">
+                <a href="javascript:;" class="weui_btn_dialog default2">Cancel</a>
+                <a href="javascript:;" class="weui_btn_dialog primary2" onclick="client.toUpdate()">OK</a>
+            </div>
+        </div>
+    </div>
+    <!-- 弹窗 END-->
+    <!-- loading -->
+    <div id="loadingToast" class="weui_loading_toast" style="display: none;">
+        <div class="weui_mask_transparent"></div>
+        <div class="weui_toast">
+            <div class="weui_loading">
+                <div class="weui_loading_leaf weui_loading_leaf_0"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_1"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_2"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_3"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_4"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_5"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_6"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_7"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_8"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_9"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_10"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_11"></div>
+            </div>
+            <p class="weui_toast_content">Cleaning</p>
+        </div>
+    </div>
+    <div id="loadingToast2" class="weui_loading_toast" style="display: none;">
+        <div class="weui_mask_transparent"></div>
+        <div class="weui_toast">
+            <div class="weui_loading">
+                <div class="weui_loading_leaf weui_loading_leaf_0"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_1"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_2"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_3"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_4"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_5"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_6"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_7"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_8"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_9"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_10"></div>
+                <div class="weui_loading_leaf weui_loading_leaf_11"></div>
+            </div>
+            <p class="weui_toast_content">Downloading</p>
+        </div>
+    </div>
+    <!-- loading END-->
+    <!-- toast -->
+    <div id="toast" style="display: none;">
+        <div class="weui_mask_transparent"></div>
+        <div class="weui_toast">
+            <i class="weui_icon_toast"></i>
+            <p class="weui_toast_content">Done</p>
+        </div>
+    </div>
+    <!-- toast END-->
+</body>
+<script src="http://cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+<script type="text/javascript">
+
+    var u = navigator.userAgent;
+    var isAndroid = u.indexOf('Android') > -1 || u.indexOf('Adr') > -1; //android终端
+    var isiOS = !!u.match(/\(i[^;]+;( U;)? CPU.+Mac OS X/); //ios终端
+    if (isiOS == true){
+        var parent = document.getElementById("cells");
+        var child = document.getElementById("versionupdate");
+        parent.removeChild(child);
+    }
+
+$(function(){
+
+    localStorage.removeItem("autologin");
+
+    $("#clearcache").click(function(){
+        $("#dialog1").show();
+    });
+    $(".default").click(function(){
+        $("#dialog1").hide();
+    });
+    $(".primary").click(function(){
+        $("#dialog1").hide();
+        $("#loadingToast").show();
+        setTimeout(function () {
+            $("#loadingToast").hide();
+            $("#toast").show();
+            $("#toast").delay(1000).hide(0);
+        }, 1500);
+    });
+    $("#versionupdate").click(function(){
+        $("#dialog2").show();
+    });
+    $(".default2").click(function(){
+        $("#dialog2").hide();
+    });
+    $(".primary2").click(function(){
+        $("#dialog2").hide();
+//        $("#loadingToast2").show();
+//        setTimeout(function () {
+//            $("#loadingToast2").hide();
+//            $("#toast").show();
+//            $("#toast").delay(1000).hide(0);
+//        }, 1500);
+    })
+})
+</script>
+</html>
+
+

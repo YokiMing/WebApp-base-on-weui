@@ -1,0 +1,110 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<title>NEWS</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<!--<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-touch-fullscreen" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />-->
+<meta name="format-detection" content="telephone=no" />
+<link rel="stylesheet" type="text/css" href="css/weui.css"/>
+<link rel="stylesheet" href="dist/dropload.css">
+</head>
+<style type="text/css">
+
+</style>
+<body>
+<div class="element">
+<div class="weui_panel weui_panel_access">
+    <div class="weui_panel_bd" id="news_container">
+   		<!-- 模板数据渲染容器 -->
+    </div>
+</div>
+</div>
+</body>
+<script src="http://cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+<script src="dist/dropload.min.js"></script>
+<script src="js/mustache.js"></script>
+<script type="text/html" id="template">
+<a href="newsdetail.html?newsId={{id}}" class="weui_media_box weui_media_appmsg" onclick="client.toDetail()">
+    <div class="weui_media_hd">
+        <img class="weui_media_appmsg_thumb" src="http://sc.nephelex.com:8888/saclesUploadFiles/uploadImgs/{{img}}" alt="" width="60" height="60">
+    </div>
+    <div class="weui_media_bd">
+        <h4 class="weui_media_title">{{title}}</h4>
+        <p class="weui_media_desc">{{subtitle}}</p>
+    </div>
+</a>
+</script>
+<script type="text/javascript">
+    
+    //重写alert，不显示网址
+    window.alert = function(name){
+        var iframe = document.createElement("IFRAME");
+        iframe.style.display="none";
+        iframe.setAttribute("src", 'data:text/plain,');
+        document.documentElement.appendChild(iframe);
+        window.frames[0].window.alert(name);
+        iframe.parentNode.removeChild(iframe);
+    };
+    
+var template = $('#template').html();
+Mustache.parse(template);
+var pageNum = 0;
+$('.element').dropload({
+    scrollArea : window,
+    domUp : {
+            domClass   : 'dropload-up',
+            domRefresh : '<div class="dropload-refresh">↓down dropload</div>',
+            domUpdate  : '<div class="dropload-update">↑release upload</div>',
+            domLoad    : '<div class="dropload-load"><span class="loading"></span>loading...</div>'
+        },
+        domDown : {
+            domClass   : 'dropload-down',
+            domRefresh : '<div class="dropload-refresh">↑up dropload</div>',
+            domLoad    : '<div class="dropload-load"><span class="loading"></span>loading...</div>',
+            domNoData  : '<div class="dropload-noData">no more data</div>'
+        },
+    loadUpFn : function(me){
+    	window.location.reload();
+    },
+    loadDownFn : function(me){
+    	pageNum = pageNum + 1;
+        $.ajax({
+            type: 'GET',
+            url: 'http://sc.nephelex.com:8080/sales_api/api/get_news_list?pageSize=10',
+            data:'pageNo='+pageNum,
+            dataType: 'json',
+            success: function(json){
+            	// console.log(json.data[0]);
+            	// console.log(pageNum);
+            	if(json.data.length != 0){	//如果还有数据
+            		// console.log(json.data);
+            		var len = json.data.length;
+           			for (var i=0 ; i<len ;i++){
+		                var rendered = Mustache.render(template, json.data[i]);
+						$('#news_container').append(rendered);
+					}
+            	}else{
+            		// console.log("没有数据了");
+            		// 锁定
+                    me.lock();
+                    // 无数据
+                    me.noData();
+            	}
+                // 每次数据加载完，必须重置
+                me.resetload();
+            },
+            error: function(xhr, type){
+                alert('Data load error');
+                // 即使加载出错，也得重置
+                // me.resetload();
+            }
+        });
+    }
+});
+</script>
+</html>
+
+

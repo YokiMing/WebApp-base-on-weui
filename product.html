@@ -1,0 +1,123 @@
+<!DOCTYPE html>
+<html lang="zh-cn">
+<head>
+<title>PRODUCT</title>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no" />
+<!--<meta name="apple-mobile-web-app-capable" content="yes" />
+<meta name="apple-touch-fullscreen" content="yes" />
+<meta name="apple-mobile-web-app-status-bar-style" content="black" />-->
+    <meta name="format-detection" content="telephone=no" />
+<link rel="stylesheet" type="text/css" href="css/weui.css"/>
+<style type="text/css">
+.con{
+    position: fixed;
+    width: 100%;
+    height: 100%;
+    background: url(image/logo-hui.png) no-repeat center center;
+    background-size: 35%;
+}
+.weui_search_inner .weui_search_input{
+    height: 28px;
+    line-height: 28px;
+}
+.weui_search_inner .weui_icon_clear,.weui_search_inner .weui_icon_search{
+    top: 3px !important;
+}
+.search-result{
+    padding: 18px 15px !important;
+}
+.red{
+    color: red;
+}
+</style>
+</head>
+<body>
+<div class="con"></div>
+<div class="searchbar">
+<div class="bd">
+    <!--<a href="javascript:;" class="weui_btn weui_btn_primary">点击展现searchBar</a>-->
+    <div class="weui_search_bar" id="search_bar">
+        <form class="weui_search_outer">
+            <div class="weui_search_inner">
+                <i class="weui_icon_search"></i>
+                <input type="search" class="weui_search_input" id="search_input" placeholder="Search product" required="" oninput="OnInput (event)">
+                <a href="javascript:" class="weui_icon_clear" id="search_clear"></a>
+            </div>
+            <label for="search_input" class="weui_search_text" id="search_text" style="display: none;">
+                <i class="weui_icon_search"></i>
+                <span>搜索</span>
+            </label>
+        </form>
+    </div>
+    <div class="weui_cells weui_cells_access search_show" id="search_show" style="display: none;">
+        <!-- 模板数据渲染容器 -->
+    </div>
+</div>
+</div>
+</body>
+<script src="http://cdn.bootcss.com/jquery/1.9.1/jquery.min.js"></script>
+<script src="js/mustache.js"></script>
+<script type="text/html" id="template">
+<a href="productlist2.html?img={{img}}" class="weui_cell search-result" onclick="client.toDetail()">
+    <div class="weui_cell_bd weui_cell_primary">
+        <p class="product-list">{{name}}</p>
+    </div>
+</a>
+</script>
+<script type="text/javascript">
+
+    //重写alert，不显示网址
+    window.alert = function(name){
+        var iframe = document.createElement("IFRAME");
+        iframe.style.display="none";
+        iframe.setAttribute("src", 'data:text/plain,');
+        document.documentElement.appendChild(iframe);
+        window.frames[0].window.alert(name);
+        iframe.parentNode.removeChild(iframe);
+    };
+
+$(function(){    
+    $("#search_clear").click(function(){
+        $("#search_input").val("").focus();
+        $("#search_show").css("display","none");
+    })
+})
+
+function OnInput(e) {
+    var template = $('#template').html();
+    Mustache.parse(template); 
+    $("#search_show").empty();
+    $("#search_show").css("display","block");
+    $.ajax({
+        type: 'GET',
+        url: 'http://sc.nephelex.com:8080/sales_api/api/search_product',
+        data:{
+            searchKey:$("#search_input").val()
+        },
+        dataType: 'json',
+        success: function(json){
+            if(json.data){
+                var len = json.data.length;
+                for (var i=0 ; i<len ;i++){
+                    var rendered = Mustache.render(template, json.data[i]);
+                    $('#search_show').append(rendered);
+
+                    var val = $("#search_input").val();
+                    var reg=new RegExp(val,"g"); //创建正则RegExp对象  
+                    var stringObj = $(".product-list").eq(i).html();  
+                    var newstr=stringObj.replace(reg,"<span class='red'>"+val+"</span>"); 
+                    $(".product-list").eq(i).html(newstr); 
+                }
+            }
+        },
+        error: function(xhr, type){
+            alert('Data load error');
+        }
+    });
+}
+
+</script>
+</html>
+
+
